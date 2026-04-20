@@ -239,12 +239,12 @@ def main() -> int:
             callback=audio_callback,
         ):
             while True:
+                final_started_at = time.perf_counter()
                 data = audio_queue.get()
                 queue_depth = audio_queue.qsize()
                 converted, resample_state = resample_audio(
                     data, args.samplerate, VOSK_SAMPLE_RATE, resample_state
                 )
-                final_started_at = time.perf_counter()
                 if recognizer.AcceptWaveform(converted):
                     text = extract_text(recognizer.Result())
                     final_elapsed_ms = (time.perf_counter() - final_started_at) * 1000
